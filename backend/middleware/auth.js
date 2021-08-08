@@ -24,4 +24,4 @@ module.exports = (req, res, next) => {
             error: 'La requête a échouée'
         })
     }
-}
+};
