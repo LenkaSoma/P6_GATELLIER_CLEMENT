@@ -65,6 +65,7 @@ exports.removeSauce = (req, res, next) => {
     }).catch(error => res.status(500).json({ error }));
 };
 
+// RECUPERER UNE SAUCE
 exports.getSauce = (req, res, next) => {
     // On récupère la sauce avec son ID
     Sauce.findOne({ _id: req.params.id })
@@ -72,6 +73,7 @@ exports.getSauce = (req, res, next) => {
     .catch(error => res.status(404).json({ error }));
 };
 
+// RECUPERER TOUTES LES SAUCES
 exports.getAllSauces = (req, res, next) => {
     // On recherche toutes les sauces existantes
     Sauce.find()
@@ -79,6 +81,7 @@ exports.getAllSauces = (req, res, next) => {
     .catch(error => res.status(400).json({ error }));
 };
 
+// LIKES / DISLIKES
 exports.like = (req, res, next) => {
     let like = req.body.like
     // On récupère l'userID
@@ -91,23 +94,21 @@ exports.like = (req, res, next) => {
           _id: sauceId
         }, {
           $push: { usersLiked: userId },
-          $inc: { likes: +1 },
+          $inc: { likes: +1 }, // On ajoute +1 aux likes
         })
         .then(() => res.status(200).json({ message: 'Vous avez aimé cette sauce !' }))
         .catch((error) => res.status(400).json({ error }))
     }
-    if (like === -1) {
-      Sauce.updateOne( // S'il s'agit d'un dislike
+    if (like === -1) { // S'il s'agit d'un dislike
+      Sauce.updateOne(
           {
             _id: sauceId
           }, {
             $push: { usersDisliked: userId },
-            $inc: { dislikes: +1 },
+            $inc: { dislikes: +1 }, // On ajoute +1 aux dislikes
           }
         )
-        .then(() => {
-          res.status(200).json({ message: 'Vous n\'aimez pas cette sauce !' })
-        })
+        .then(() => { res.status(200).json({ message: 'Vous n\'aimez pas cette sauce !' })})
         .catch((error) => res.status(400).json({ error }))
     }
     if (like === 0) { // Si il s'agit d'annuler un like ou un dislike
@@ -120,7 +121,7 @@ exports.like = (req, res, next) => {
                 _id: sauceId
               }, {
                 $pull: { usersLiked: userId },
-                $inc: { likes: -1 },
+                $inc: { likes: -1 }, // On enlève -1 aux likes
               })
               .then(() => res.status(200).json({ message: 'Like retiré !' }))
               .catch((error) => res.status(400).json({ error }))
@@ -130,12 +131,11 @@ exports.like = (req, res, next) => {
                 _id: sauceId
               }, {
                 $pull: { usersDisliked: userId },
-                $inc: {  dislikes: -1 },
+                $inc: {  dislikes: -1 }, // On enlève -1 aux dislikes
               })
               .then(() => res.status(200).json({ message: 'Dislike retiré !' }))
               .catch((error) => res.status(400).json({ error }))
           }
-        })
-        .catch((error) => res.status(404).json({ error }))
+        }).catch((error) => res.status(404).json({ error }))
     }
 };
