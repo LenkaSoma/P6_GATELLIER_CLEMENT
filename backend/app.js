@@ -1,5 +1,4 @@
 const express       = require('express');       // Import d'Express
-const bodyParser    = require('body-parser');   // Import de bodyParser pour gérer les JSONS d'une requête POST
 const mongoose      = require('mongoose');      // Import de Mongoose pour se connecter a la DB Mongo
 const path          = require('path');          // Import de path pour upload des images et gérer les fichiers
 const helmet        = require('helmet');        // Import d'Helmet pour améliorer la sécurité de l'application
@@ -31,9 +30,9 @@ app.use((req, res, next) => {
 });
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // Transforme les données POST en objet JSON
-app.use(helmet()); // Mise en place du X-XSS-Protection / Sécurité
-app.use('/images', express.static(path.join(__dirname, 'images'))); // Permet de charger les fichiers dans le dossier images
+app.use(express.json());                                                // Transforme les données POST en objet JSON
+app.use(helmet());                                                      // Mise en place du X-XSS-Protection / Sécurité
+app.use('/images', express.static(path.join(__dirname, 'images')));     // Permet de charger les fichiers dans le dossier images
 
 // API
 app.use('/api/sauces', saucesRoutes);
